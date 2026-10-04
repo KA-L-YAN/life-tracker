@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy policy · Life Tracker</title>
+<meta name="description" content="What Life Tracker collects, why, where it is stored, and how to delete it.">
+<link rel="icon" href="/icons/icon-192.png">
+<style>
+  :root { --bg: #FBFAF7; --text: #16161A; --muted: #6E6C68; --rule: rgba(22,22,26,0.1); --accent: #4B45E0; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #121214; --text: #F3F1EC; --muted: #A3A09A; --rule: rgba(255,255,255,0.1); --accent: #8E89FF; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 48px 20px 80px; }
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+  header img { width: 52px; height: 52px; border-radius: 13px; }
+  h1 { font-size: 36px; line-height: 1.1; margin: 0; letter-spacing: -0.02em; }
+  h2 { font-size: 20px; margin: 36px 0 8px; }
+  p, li { color: var(--text); }
+  .muted { color: var(--muted); }
+  ul { padding-left: 22px; }
+  li { margin: 6px 0; }
+  a { color: var(--accent); }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 36px 0; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="/icons/icon-192.png" alt="">
+    <div>
+      <h1>Privacy policy</h1>
+      <div class="muted">Life Tracker · Effective 26 September 2026</div>
+    </div>
+  </header>
+
+  <p>Life Tracker is a personal log for your meals, habits, study time, daily route, mood, steps, sleep and water. It is made by Pavan Kalyan. This page explains what the app collects, why, where it is kept, and how you delete it. The short version: your data is used only to show you your own history. There are no ads, no analytics, and nothing is sold or shared for marketing.</p>
+
+  <h2>What the app collects</h2>
+  <ul>
+    <li><strong>Your account:</strong> your email address and a password. Passwords are stored only in hashed form by our sign-in provider; we can't read them.</li>
+    <li><strong>What you log:</strong> meals (what you ate, which meal, when), habits you build or quit and each day you tick off or log a slip, focus sessions (start, end, topic), a daily mood (1 to 5) with an optional one-line note, glasses of water, sleep you log (bedtime and wake time), step totals you type in, and your plan (name, goals, daily study, step, water and sleep goals, reminder time and days).</li>
+    <li><strong>Steps and sleep from Health Connect (Android, only if you connect it):</strong> the app <em>reads</em> your step counts (grouped by hour), sleep sessions (start and end times), water you drink (amount and time) and workouts (type, title, start and end times) for the last seven days from Android's Health Connect, and copies them to your account so you see them on the Today dial, the Body screen and your weekly and yearly summaries, including on the website, and so habits you set to tick automatically (for example “walk 8,000 steps” or “work out for 30 minutes”) can tick themselves. It never writes to Health Connect and reads no other health data. You can disconnect at any time in Health Connect's settings; use of this data follows the <a href="https://support.google.com/googleplay/android-developer/answer/9888170">Health Connect permissions policy</a>, including its Limited Use requirements: it is used only to show you your own history, never for advertising, and never shared or sold.</li>
+    <li><strong>Location:</strong> precise location points (latitude, longitude, accuracy and time), used to draw your route for each day. Points are recorded when you open the app, when you tap “Pin where I am”, and, only on Android and only if you switch on background tracking, every few minutes while the app is closed or not in use. You can switch background tracking off at any time on the Route screen. Location points are deleted automatically after 30 days.</li>
+    <li><strong>Profile picture and to-dos:</strong> if you choose a photo, it is uploaded to a private folder only your account can read, and shown through short-lived private links; switching back to a buddy avatar deletes it. Your to-do list (task text, the day it's due, when you finished it) is stored like everything else you log.</li>
+    <li><strong>Focus music:</strong> the Spotify playlist you pick is saved with your plan. Playing it opens the Spotify app or website; the embedded player on the website is Spotify's own and follows Spotify's privacy policy. Life Tracker has no access to your Spotify account.</li>
+    <li><strong>Habits that tick themselves:</strong> if you set a habit to tick when you're at a place, the app stores that place's coordinates with the habit and compares them with your own route points, on your device, to tick it. Nothing about the place is sent anywhere else.</li>
+    <li><strong>Kept on your device only:</strong> your light/dark setting, a running focus timer, and your reminder schedule (reminders are scheduled by your phone; no server sends them).</li>
+  </ul>
+
+  <h2>Why</h2>
+  <p>Only to run the app for you: signing you in, emailing the codes you ask for (sign-up and password reset), and showing you your own meals, habits, focus time, routes, mood, steps, sleep and water. Nobody else can see your entries.</p>
+
+  <h2>Where it is stored and who processes it</h2>
+  <ul>
+    <li><strong>Supabase</strong> stores your account and everything you log. Every table is locked so each account can read and change only its own rows.</li>
+    <li><strong>Vercel</strong> hosts the website version of the app.</li>
+    <li><strong>Google (Gmail)</strong> delivers the sign-up and password-reset code emails.</li>
+    <li><strong>OpenStreetMap</strong> provides map images. When a map is shown, your device requests map tiles for the area on screen, which tells the OpenStreetMap servers your IP address and that area. Your saved location points are never sent to them.</li>
+  </ul>
+  <p>These providers process data only to deliver their service. We don't sell or rent your data, and we don't share it with advertisers or data brokers. Data is sent over encrypted connections (HTTPS).</p>
+
+  <h2>Permissions the Android app asks for</h2>
+  <ul>
+    <li><strong>Location, including “Allow all the time”</strong>: to record your route, only after you turn on background tracking and see an explanation first.</li>
+    <li><strong>Health Connect: read steps, sleep, hydration and exercise</strong>: only after you tap “Connect Health Connect” on the Body screen, to show them and to tick habits you set up.</li>
+    <li><strong>Photos and camera</strong>: only when you choose or take a profile picture.</li>
+    <li><strong>Notifications</strong>: for the daily check-in reminder you choose, and for the notice Android shows while background tracking is on.</li>
+  </ul>
+
+  <h2>Keeping and deleting your data</h2>
+  <p>Location points are deleted automatically 30 days after they're recorded. Everything else is kept until you delete it. You can delete single entries in the app at any time. To delete everything, open the app, go to <strong>You → Delete account</strong>. This immediately and permanently deletes your account, meals, habits, focus sessions, routes, moods, steps, sleep, water, workouts, to-dos, profile photo and plan. (It doesn't touch the data that stays in Health Connect on your phone.) You can also email us to ask for deletion.</p>
+
+  <h2>Your rights</h2>
+  <p>You can ask to see, correct or erase your personal data, or raise a complaint, under India's Digital Personal Data Protection Act, 2023, and other laws that apply to you. Email the address below. We'll reply within 30 days.</p>
+
+  <h2>Children</h2>
+  <p>Life Tracker is meant for people aged 18 and over. Younger people should use it only with a parent's or guardian's permission.</p>
+
+  <h2>Changes</h2>
+  <p>If this policy changes, the new version will appear on this page with a new effective date.</p>
+
+  <hr>
+  <h2>Contact</h2>
+  <p>Pavan Kalyan · <a href="mailto:life.tracker.supabase@gmail.com">life.tracker.supabase@gmail.com</a></p>
+</main>
+</body>
+</html>

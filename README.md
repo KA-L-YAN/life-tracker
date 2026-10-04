@@ -1,56 +1,59 @@
-# Welcome to your Expo app 👋
+# Life Tracker
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A private log for what you ate, habits you're building or quitting, your daily route, study time, steps, sleep, water, and how the day felt — one Expo app that runs as a website, an installable iOS/iPad PWA, and a real sideloadable Android app. A short plan setup (name, goals, daily study minutes, reminder time) runs on first sign-in and can be changed any time from **You → Adjust my plan**. Today draws everything on a 24-hour dial you can drag around to replay the day, under a sky that follows the real hour; **This week** turns the last seven days into charts and a few plain sentences; each habit has a six-month heatmap; the year view colours every day by mood, habits or steps; on Android, steps and sleep come from Health Connect (Samsung Health, Google Fit, the phone's own counter, a watch) and sync to the website; deletes can be undone for five seconds. Phones get a bottom bar, tablets two columns, desktops a side rail. Free stack: Supabase (DB + auth), Vercel (web hosting), EAS Build (Android APK), OpenStreetMap tiles + Leaflet (maps, no API key ever).
 
-## Get started
+## 1. One-time Supabase setup
 
-1. Install dependencies
+1. Create a free project at [supabase.com](https://supabase.com) (no card required).
+2. In the dashboard, go to **SQL Editor → New query** and run each file in [`supabase/migrations/`](supabase/migrations) in number order (001 → 007). They create the tables (food, habits + habit logs, study, location, profile) with row-level security so each account only ever reads its own data, plus in-app account deletion (003), the "no account with that email" check for password resets (004), the nightly route clean-up (005), the daily mood check-in (006), and steps, sleep, water and daily goals (007).
+3. Sign-up with an emailed code (the app's "Create an account" and "Forgot password?" flows):
+   - **Authentication → Emails → SMTP Settings**: enable custom SMTP. This project uses a dedicated Gmail with an app password (`smtp.gmail.com`, port 465). Supabase's built-in sender only manages a couple of emails an hour and won't reach people outside your team.
+   - **Authentication → Emails → Templates**: in *Confirm sign up* and *Reset password*, show `{{ .Token }}` (the code) instead of the link. The app asks for the code; links would open a browser instead of the app.
+   - **Authentication → Sign In / Providers**: turn on "Allow new users to sign up" and "Confirm email"; under *Email*, set the OTP length to 6.
+   - Every account only ever sees its own rows (row-level security).
+4. To keep the app private instead, turn sign-ups off and add people from **Authentication → Users → Add user**.
+5. Go to **Project Settings → API** and copy the **Project URL** and **anon public** key.
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## 2. Local setup
 
 ```bash
-npm run reset-project
+cp .env.example .env
+# paste your Supabase URL/anon key into .env
+npm install
+npx expo start --web       # website, at http://localhost:8081
+npx expo run:android       # first native Android build (needs Android Studio/emulator or a USB device)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Background location (`expo-task-manager`), reminders (`expo-notifications`) and the map WebView (`react-native-webview`) are native modules, so past this point you're running a **dev client**, not Expo Go — `expo run:android` builds and installs that dev client for you automatically.
 
-### Other setup steps
+## 3. Deploy the website (Vercel, free)
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+npx expo export -p web --clear   # outputs to dist/; --clear stops a stale cache baking in old env values
+npx vercel deploy dist --prod
+```
 
-## Learn more
+Or connect the GitHub repo in the Vercel dashboard: build command `npx expo export -p web`, output directory `dist`, and set `EXPO_PUBLIC_SUPABASE_URL` / `EXPO_PUBLIC_SUPABASE_ANON_KEY` as Vercel environment variables (they're baked in at build time).
 
-To learn more about developing your project with Expo, look at the following resources:
+**On your iPhone/iPad**: open the deployed URL in Safari, tap Share → **Add to Home Screen**. That gives you a full-screen app icon — no App Store, no $99/year Apple Developer account. The trade-off: iOS won't track your location in the true background, so a location point is captured each time you open the app instead of continuously.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## 4. Build the Android app (EAS, free tier)
 
-## Join the community
+```bash
+npm install -g eas-cli
+eas login
+eas build:configure
+eas build --platform android --profile preview
+```
 
-Join our community of developers creating universal apps.
+This produces a real, installable `.apk` (not a Play Store listing — just download and sideload it on your phone). EAS's free tier includes a limited number of builds/month, which is plenty for occasional rebuilds.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Notes
+
+- Retention: route points are deleted nightly once they're 30 days old (pg_cron job from migration 005; the app's copy of the number is `ROUTE_KEEP_DAYS` in `src/lib/location/config.ts`). Meals, habits and focus sessions are kept until the user deletes them.
+- Capacity on the free plan: the 500 MB database is the limit, not sign-ins (50k monthly active users). Routes were the only fast-growing data (~10–15 MB per all-day tracker per year); with 30-day retention that's about 1 MB each, so several hundred active users fit.
+- A free Supabase project pauses after ~7 days with zero activity; opening the app again auto-resumes it with no data loss.
+- Background location on Android uses a foreground-service notification (Android requires this) with 5-minute/100-meter update cadence — see `src/lib/location/config.ts` to tune it.
+- Daily reminders are Android-only; browsers and the iOS home-screen app don't get them.
+- Maps use OpenStreetMap's public tiles (fine for one person's use; see their [tile usage policy](https://operations.osmfoundation.org/policies/tiles/)). Dark mode is a CSS filter over the same tiles. To swap providers, change `TILE_URL` in `src/components/map/tiles.ts`.
+- `npm run check` runs the self-check for the streak / days-clean maths.
